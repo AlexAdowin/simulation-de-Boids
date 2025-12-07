@@ -1,59 +1,67 @@
-# Fichier: main.py
-import pygame
 import random
-import affichage # Importe tout le contenu de votre fichier affichage.py
-from logique import Boid # Importe notre nouvelle classe Boid complète
+import pygame
+import affichage 
+from logique import Boid 
+# Importe SpatialGrid depuis utils
+from utils import SpatialGrid 
 
 # ----------------------------------------------------------------------
-# --- MONKEY PATCHING : Remplacer la classe Boid ---
+# --- PARAMÈTRES ET PATCHING ---
 # ----------------------------------------------------------------------
-
-# Ceci est l'astuce : Nous remplaçons la classe 'Boid' (basée sur des listes)
-# dans le module 'affichage' par notre classe 'Boid' (basée sur Vector).
+# Augmentons à 1000 pour tester l'optimisation
+affichage.NUMBER_OF_BOIDS = 300
 affichage.Boid = Boid
 
-# Pour que la nouvelle méthode update vectorielle fonctionne correctement, 
-# nous allons aussi corriger la fonction d'update dans la boucle principale.
-# Nous remplaçons la fonction 'main' de affichage.py par une version compatible
-# avec la nouvelle signature boid.update(all_boids, width, height).
-
-original_main = affichage.main
+# Définir la taille de la cellule de la grille. Elle doit être >= au rayon max de perception (50.0).
+CELL_SIZE = 50 
 
 def patched_main():
-    """Version modifiée de main() qui injecte les dimensions de l'écran dans l'update."""
     
-    # 1. Initialisation (Identique à l'original)
+    # 1. Initialisation
     pygame.init()
     screen = pygame.display.set_mode((affichage.SCREEN_WIDTH, affichage.SCREEN_HEIGHT))
-    pygame.display.set_caption("Simulation de Boids (Flocage actif)")
+    pygame.display.set_caption(f"Simulation de {affichage.NUMBER_OF_BOIDS} Boids (Optimisé O(N))")
     clock = pygame.time.Clock()
 
-    # 2. Création des Boids (Crée des instances de la nouvelle classe logique.Boid)
+    # INITIALISATION DE LA GRILLE SPATIALE
+    spatial_grid = SpatialGrid(
+        affichage.SCREEN_WIDTH, 
+        affichage.SCREEN_HEIGHT, 
+        CELL_SIZE
+    )
+
+    # 2. Création des Boids
     boids = []
     for _ in range(affichage.NUMBER_OF_BOIDS):
         x = random.randint(0, affichage.SCREEN_WIDTH)
         y = random.randint(0, affichage.SCREEN_HEIGHT)
-        boids.append(affichage.Boid(x, y)) # affichage.Boid est maintenant logique.Boid
+        boids.append(affichage.Boid(x, y)) 
 
     # 3. Boucle Principale du Jeu
     running = True
     while running:
-        # --- A. Gérer les Entrées (Input) ---
+        # ... (Gestion des Entrées inchangée)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        # --- B. Mise à Jour de la Logique (Update) ---
-        # *** C'EST ICI QUE NOUS MODIFIONS LE COMPORTEMENT DE L'ANCIENNE BOUCLE ***
+        # --- A. LOGIQUE D'OPTIMISATION DE LA GRILLE ---
+        spatial_grid.reset()
         for boid in boids:
-            # Appel la nouvelle méthode Boid.update(all_boids, width, height)
-            boid.update(boids, affichage.SCREEN_WIDTH, affichage.SCREEN_HEIGHT) 
+            spatial_grid.add_boid(boid) # Tous les Boids sont placés dans la bonne cellule
+
+        # --- B. Mise à Jour de la Logique (Update) ---
+        for boid in boids:
+            # Récupérer UNIQUEMENT les voisins locaux
+            neighbors = spatial_grid.get_neighbors(boid) 
+            
+            # Appel la méthode update avec la liste restreinte de voisins
+            boid.update(neighbors, affichage.SCREEN_WIDTH, affichage.SCREEN_HEIGHT) 
 
         # --- C. Rendu Graphique (Draw) ---
         screen.fill(affichage.BLACK) 
         
         for boid in boids:
-            # Appel la nouvelle méthode Boid.draw(screen) avec la couleur WHITE
             boid.draw(screen, affichage.WHITE) 
             
         pygame.display.flip() 
@@ -61,10 +69,5 @@ def patched_main():
 
     pygame.quit()
 
-# ----------------------------------------------------------------------
-# --- LANCEMENT ---
-# ----------------------------------------------------------------------
-
 if __name__ == '__main__':
-    # Lance la fonction principale modifiée
     patched_main()
