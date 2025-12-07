@@ -1,42 +1,38 @@
+# Fichier: utils.py
+
 import math
 
 class Vector:
+    """Implémentation de base d'un vecteur 2D avec surcharge d'opérateurs."""
     
     def __init__(self, x=0.0, y=0.0):
-        # On stocke les composantes
         self.x = float(x)
         self.y = float(y)
         
-    # Decoiverte de la Méthodes Magiques (Surcharge d'Opérateur) ---
-    
-    # Permet de faire : v1 + v2
     def __add__(self, other):
-        """Additionne deux vecteurs (Vector + Vector)"""
-        # On retourne un NOUVEL objet Vector, résultat de l'addition
         return Vector(self.x + other.x, self.y + other.y)
 
-    # Permet de faire : v1 - v2
     def __sub__(self, other):
-        """Soustrait un vecteur à un autre (Vector - Vector)"""
         return Vector(self.x - other.x, self.y - other.y)
 
-    # Permet de faire : v1 * 5 (multiplication scalaire)
     def __mul__(self, scalar):
-        """Multiplie par un scalaire (Vector * nombre)"""
         return Vector(self.x * scalar, self.y * scalar)
+    
+    # Méthodes Magiques pour les opérations in-place (+=, -=)
+    def __iadd__(self, other):
+        self.x += other.x
+        self.y += other.y
+        return self
 
-    # Pour que print(v) affiche un résultat lisible
-    def __repr__(self):
-        return f"Vector({self.x:.2f}, {self.y:.2f})"
-    
-    # --- Méthodes Mathématiques Utilitaires ---
-    
+    def __isub__(self, other):
+        self.x -= other.x
+        self.y -= other.y
+        return self
+        
     def magnitude(self):
-        """Calcule la longueur du vecteur"""
-        return math.sqrt(self.x**2 + self.y**2) # pythagore
+        return math.sqrt(self.x**2 + self.y**2)
 
     def normalize(self):
-        """Retourne un nouveau vecteur de même direction mais de longueur 1"""
         mag = self.magnitude()
         if mag == 0:
             return Vector(0, 0)

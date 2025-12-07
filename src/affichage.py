@@ -4,9 +4,9 @@ import math
 
 # --- Constantes de la Simulation ---
 SCREEN_WIDTH = 1275
-SCREEN_HEIGHT = 670
-FPS = 60
-NUMBER_OF_BOIDS = 100
+SCREEN_HEIGHT = 660
+FPS = 120
+NUMBER_OF_BOIDS = 300
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
