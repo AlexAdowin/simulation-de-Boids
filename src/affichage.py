@@ -2,7 +2,7 @@ import pygame
 import random
 import math
 
-# --- Constantes de la Simulation ---
+#  Constantes de la Simulation ---
 SCREEN_WIDTH = 1275
 SCREEN_HEIGHT = 660
 FPS = 60
@@ -11,7 +11,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 
-# --- Classe Boid ---
+#  Classe Boid 
 class Boid:
     def __init__(self, x, y):
         # Position (Liste [x, y])
@@ -32,7 +32,7 @@ class Boid:
         pygame.draw.circle(screen, WHITE, (int(self.position[0]), int(self.position[1])), self.size)
 
     def update(self, all_boids):
-        # --- Mouvement de Base (Ignorant les règles de flocage pour l'instant) ---
+        #  Mouvement de Base (Ignorant les règles de flocage pour l'instant) 
         
         # 1. Mise à jour de la vitesse (V = V + A)
         self.velocity[0] += self.acceleration[0]
@@ -68,7 +68,7 @@ class Boid:
         elif self.position[1] < 0:
             self.position[1] = SCREEN_HEIGHT
 
-# --- Fonction principale ---
+#  Fonction principale 
 def main():
     # 1. Initialisation
     pygame.init()
@@ -87,17 +87,17 @@ def main():
     # 3. Boucle Principale du Jeu
     running = True
     while running:
-        # --- A. Gérer les Entrées (Input) ---
+        #  A. Gérer les Entrées (Input) 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        # --- B. Mise à Jour de la Logique (Update) ---
+        #  Mise à Jour de la Logique (Update) 
         # Chaque boid calcule ses règles et met à jour sa position
         for boid in boids:
             boid.update(boids) # all_boids est nécessaire même si nous ne l'utilisons pas encore
 
-        # --- C. Rendu Graphique (Draw) ---
+        #  Rendu Graphique (Draw) 
         screen.fill(BLACK) # Effacer l'écran
         
         for boid in boids:

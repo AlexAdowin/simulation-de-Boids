@@ -5,11 +5,8 @@ from logique import Boid
 # Importe SpatialGrid depuis utils
 from utils import SpatialGrid 
 
-# ----------------------------------------------------------------------
-# --- PARAMÈTRES ET PATCHING ---
-# ----------------------------------------------------------------------
 # Augmentons à 1000 pour tester l'optimisation
-affichage.NUMBER_OF_BOIDS = 10
+affichage.NUMBER_OF_BOIDS = 50
 affichage.Boid = Boid
 
 # Définir la taille de la cellule de la grille. Elle doit être >= au rayon max de perception (50.0).
@@ -40,17 +37,17 @@ def patched_main():
     # 3. Boucle Principale du Jeu
     running = True
     while running:
-        # ... (Gestion des Entrées inchangée)
+        #  (Gestion des Entrées inchangée)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        # --- A. LOGIQUE D'OPTIMISATION DE LA GRILLE ---
+        # LOGIQUE D'OPTIMISATION DE LA GRILLE ---
         spatial_grid.reset()
         for boid in boids:
             spatial_grid.add_boid(boid) # Tous les Boids sont placés dans la bonne cellule
 
-        # --- B. Mise à Jour de la Logique (Update) ---
+        #  Mise à Jour de la Logique (Update) ---
         for boid in boids:
             # Récupérer UNIQUEMENT les voisins locaux
             neighbors = spatial_grid.get_neighbors(boid) 
@@ -58,7 +55,7 @@ def patched_main():
             # Appel la méthode update avec la liste restreinte de voisins
             boid.update(neighbors, affichage.SCREEN_WIDTH, affichage.SCREEN_HEIGHT) 
 
-        # --- C. Rendu Graphique (Draw) ---
+        #  Rendu Graphique (Draw) ---
         screen.fill(affichage.BLACK) 
         
         for boid in boids:
