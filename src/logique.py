@@ -11,8 +11,8 @@ class Boid:
         self.size = 5
 
         # Constantes de Flocage (Rayon de perception = Rayon max de la grille)
-        self.separation_radius = 25.0 
-        self.separation_weight = 1.5
+        self.separation_radius = 100.0 
+        self.separation_weight = 50.0
         self.alignment_radius = 50.0  
         self.alignment_weight = 1.0
         self.cohesion_radius = 50.0 

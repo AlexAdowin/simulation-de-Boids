@@ -9,7 +9,7 @@ from utils import SpatialGrid
 # --- PARAMÈTRES ET PATCHING ---
 # ----------------------------------------------------------------------
 # Augmentons à 1000 pour tester l'optimisation
-affichage.NUMBER_OF_BOIDS = 300
+affichage.NUMBER_OF_BOIDS = 10
 affichage.Boid = Boid
 
 # Définir la taille de la cellule de la grille. Elle doit être >= au rayon max de perception (50.0).
